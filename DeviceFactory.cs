@@ -12,8 +12,6 @@ public static class DeviceFactory
 {
     public static IDevice? Create(string type, string name)
     {
-        // Lỗi sinh viên: Chưa chuẩn hóa chữ hoa/thường, nhập "Light" sẽ bị trượt
-        // Lỗi sinh viên: Khi loại không hỗ trợ, trả về null thay vì ném ArgumentException theo yêu cầu
         if (type == "light")
         {
             return new SmartLight(name);

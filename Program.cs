@@ -14,32 +14,19 @@ internal class Program
     {
         Console.OutputEncoding = Encoding.UTF8;
 
-        Console.WriteLine("=== BƯỚC 2: THỬ NGHIỆM DEVICE FACTORY (BẢN NHÁP) ===");
+        Console.WriteLine("=== BƯỚC 3: THỬ NGHIỆM CẤU HÌNH HOMECONFIGURATION (BẢN NHÁP) ===");
 
-        // Thử tạo các thiết bị hợp lệ
-        Console.WriteLine("\n[Thử nghiệm 1] Tạo thiết bị hợp lệ qua Factory:");
-        IDevice? light = DeviceFactory.Create("light", "Đèn phòng khách");
-        IDevice? fan = DeviceFactory.Create("fan", "Quạt phòng khách");
-        IDevice? door = DeviceFactory.Create("door", "Cửa chính");
+        // Lấy cấu hình qua Instance
+        var config1 = HomeConfiguration.Instance;
+        var config2 = HomeConfiguration.Instance;
 
-        Console.WriteLine($"-> Đèn tạo ra kiểu: {light?.GetType().Name}");
-        Console.WriteLine($"-> Quạt tạo ra kiểu: {fan?.GetType().Name}");
-        Console.WriteLine($"-> Cửa tạo ra kiểu: {door?.GetType().Name}");
+        Console.WriteLine($"Tên ngôi nhà: {config1.HomeName}");
+        Console.WriteLine($"Mức sáng ban đêm mặc định: {config1.NightLightLevel}%");
+        Console.WriteLine($"Kiểm tra hai biến cùng trỏ về một đối tượng: {ReferenceEquals(config1, config2)}");
 
-        // Thử nghiệm lỗi 1: truyền chữ hoa
-        Console.WriteLine("\n[Thử nghiệm 2] Truyền chữ hoa 'Light' (kỳ vọng tạo được):");
-        IDevice? uppercaseLight = DeviceFactory.Create("Light", "Đèn ngủ");
-        if (uppercaseLight == null)
-        {
-            Console.WriteLine("-> THẤT BẠI: Factory trả về null do chưa xử lý chữ hoa/thường!");
-        }
-
-        // Thử nghiệm lỗi 2: truyền loại chưa hỗ trợ (kỳ vọng ném ArgumentException)
-        Console.WriteLine("\n[Thử nghiệm 3] Tạo thiết bị 'camera' (kỳ vọng ném ArgumentException):");
-        IDevice? cam = DeviceFactory.Create("camera", "Camera giám sát");
-        if (cam == null)
-        {
-            Console.WriteLine("-> THẤT BẠI: Factory trả về null thay vì ném ngoại lệ ArgumentException!");
-        }
+        // Phát hiện lỗi thiết kế: Do constructor public nên bên ngoài vẫn new được!
+        var config3 = new HomeConfiguration();
+        Console.WriteLine($"Cảnh báo: Bên ngoài vẫn 'new HomeConfiguration()' được tự do: {config3 != null}");
+        Console.WriteLine($"config1 và config3 là 2 đối tượng khác nhau: {!ReferenceEquals(config1, config3)} (Vi phạm Singleton!)");
     }
 }
