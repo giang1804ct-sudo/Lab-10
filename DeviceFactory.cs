@@ -7,25 +7,19 @@ using System;
 
 namespace SmartHomeMini;
 
-// Lớp Factory tạo thiết bị (Bản nháp ban đầu)
+// Lớp Factory tạo thiết bị (Đã sửa lỗi hoa/thường và ném ArgumentException)
 public static class DeviceFactory
 {
-    public static IDevice? Create(string type, string name)
+    public static IDevice Create(string type, string name)
     {
-        if (type == "light")
+        // Sử dụng Trim() và ToLowerInvariant() để không phân biệt chữ hoa/thường và khoảng trắng thừa
+        // Sử dụng switch expression và ném ngoại lệ ArgumentException nếu không hỗ trợ
+        return type.Trim().ToLowerInvariant() switch
         {
-            return new SmartLight(name);
-        }
-        else if (type == "fan")
-        {
-            return new SmartFan(name);
-        }
-        else if (type == "door")
-        {
-            return new SmartDoor(name);
-        }
-
-        // TODO: Cần xử lý ném ngoại lệ ArgumentException thay vì trả về null
-        return null;
+            "light" => new SmartLight(name),
+            "fan" => new SmartFan(name),
+            "door" => new SmartDoor(name),
+            _ => throw new ArgumentException($"Loại thiết bị không được hỗ trợ: {type}")
+        };
     }
 }

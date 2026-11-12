@@ -3,32 +3,24 @@
 // Họ tên: Đặng Thị Hương Giang
 /*****************/
 
+using System;
+
 namespace SmartHomeMini;
 
-// Lớp cấu hình chung cho ngôi nhà (Bản nháp ban đầu)
-// Lỗi 1: Chưa có từ khóa sealed để ngăn kế thừa
-public class HomeConfiguration
+// Lớp cấu hình chung ngôi nhà (Đã hoàn thiện Singleton an toàn luồng)
+public sealed class HomeConfiguration
 {
-    // Lỗi 2: Khởi tạo singleton thô sơ, chưa thread-safe bằng Lazy<T>
-    private static HomeConfiguration? instance;
+    // Sử dụng Lazy<T> để an toàn đa luồng và khởi tạo trễ (lazy initialization)
+    private static readonly Lazy<HomeConfiguration> lazy =
+        new(() => new HomeConfiguration());
 
-    public static HomeConfiguration Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = new HomeConfiguration();
-            }
-            return instance;
-        }
-    }
+    public static HomeConfiguration Instance => lazy.Value;
 
     public string HomeName { get; set; } = "Ngôi nhà thông minh của tôi";
     public int NightLightLevel { get; set; } = 30;
 
-    // Lỗi 3: Để constructor public khiến bên ngoài vẫn new tự do được!
-    public HomeConfiguration()
+    // Constructor private ngăn cản việc khởi tạo từ bên ngoài
+    private HomeConfiguration()
     {
     }
 }
