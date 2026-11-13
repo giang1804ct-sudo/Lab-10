@@ -7,8 +7,8 @@ using System;
 
 namespace SmartHomeMini;
 
-// Facade cung cấp giao diện cấp cao điều khiển các thiết bị (Bản nháp ban đầu)
-public class SmartHomeFacade
+// Facade cung cấp giao diện cấp cao điều khiển các thiết bị (Đã hoàn thiện)
+public sealed class SmartHomeFacade
 {
     private readonly IDevice light;
     private readonly IDevice fan;
@@ -30,12 +30,13 @@ public class SmartHomeFacade
 
     public void GoToSleep()
     {
-        // Lỗi 1: Quên tắt quạt khi đi ngủ
-        // fan.TurnOff(); // TODO: Cần bổ sung tắt quạt trước khi ngủ
+        // Đã sửa: Tắt quạt, khóa cửa an toàn, bật đèn ngủ
+        fan.TurnOff();
         door.Lock();
         light.TurnOn();
 
-        // Lỗi 2: Hardcode mức sáng 50% thay vì đọc từ cấu hình HomeConfiguration
-        Console.WriteLine("Mức sáng ban đêm: 50%");
+        // Đã sửa: Đọc trực tiếp mức sáng ban đêm từ Singleton HomeConfiguration
+        int level = HomeConfiguration.Instance.NightLightLevel;
+        Console.WriteLine($"Mức sáng ban đêm: {level}%");
     }
 }
